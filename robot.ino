@@ -1,41 +1,39 @@
 // define IO pin
 #define PWMA 5    // Controls power to right motor
 #define PWMB 6    // Controls power to left motor
-#define AIN 7     // Controls direction of right motor, HIGH = FORWARD, LOW = REVERSE
-#define BIN 8     // Controls direction of right motor, HIGH = FORWARD, LOW = REVERSE
-#define STBY 3    // Place H-Bridge in standby if LOW, Run if HIGH
+#define AIN 7
+#define BIN 8
+#define STBY 3
 
 const int trigPin = 13;
 const int echoPin = 12;
 float duration, distance;
 
-//init the car
 void setup() {
-  pinMode(PWMA, OUTPUT);     //set IO pin mode OUTPUT
+  pinMode(PWMA, OUTPUT);
   pinMode(PWMB, OUTPUT);
   pinMode(BIN, OUTPUT);
   pinMode(AIN, OUTPUT);
   pinMode(STBY, OUTPUT);
-  digitalWrite(STBY, HIGH);  //Enable Motors to run
-  digitalWrite(PWMA, LOW);  // Fully on 
- // digitalWrite(PWMA, HIGH);  // Fully on
+  digitalWrite(STBY, HIGH);
+  digitalWrite(PWMA, LOW);
+  
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-  distance = 6;
+  distance = 10000;
+  
   digitalWrite(STBY, LOW);
   Serial.begin(9600);
 }
 
-//main loop
 void loop() {
-  Serial.println(distance);
-  while (distance > 5){  // wait for mode switch to be pressed (go to 0)
+  while (distance > 7){
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
     digitalWrite(trigPin, HIGH);
     delayMicroseconds(10);
     digitalWrite(trigPin, LOW);
-  
+    
     duration = pulseIn(echoPin, HIGH);
     distance = (duration*.0343)/2;
     Serial.print("Distance: ");
@@ -43,62 +41,77 @@ void loop() {
     delay(100);
   }
 
-  // 45 degrees: 187.5
-  // 90 degrees: 375
-  // 180 degrees: 750
-
-  // 50 cm: 800
-
+  // 90 degree turns: 270
+  
   delay(1000);
 
-  go(1600);
+  start();
 
-  while(1);
+  // CHANGE HERE
+
+
+  // CHANGE HERE
+  endRun();
+
+  delay(10000000);
+}
+
+void start() {
+  back(385);
+  delay(500);
+  turnRight(540);
+  delay(500);
+}
+
+void endRun() {
+  back(195);
+}
+
+void moveBlock() {
+  for (int i = 0; i < 4; i++) {
+    go(195);
+    delay(300);
+  }
+  turnLeft(50);
+  delay(300);
 }
 
 void turnLeft(int mS) {
   digitalWrite(STBY, HIGH);
-  digitalWrite(AIN, HIGH);    // Forward direction
-  digitalWrite(PWMA, HIGH);   // Full power
-  digitalWrite(BIN, LOW);    // Forward direction
-  digitalWrite(PWMB, HIGH);   // Full power
+  digitalWrite(AIN, HIGH);
+  digitalWrite(PWMA, HIGH);
+  digitalWrite(BIN, LOW);
+  digitalWrite(PWMB, HIGH);
   delay(mS);
   digitalWrite(STBY, LOW);
 }
 
 void turnRight(int mS) {
   digitalWrite(STBY, HIGH);
-  digitalWrite(AIN, LOW);    // Forward direction
-  digitalWrite(PWMA, HIGH);   // Full power
-  digitalWrite(BIN, HIGH);    // Forward direction
-  digitalWrite(PWMB, HIGH);   // Full power
+  digitalWrite(AIN, LOW);
+  digitalWrite(PWMA, HIGH);
+  digitalWrite(BIN, HIGH);
+  digitalWrite(PWMB, HIGH);
   delay(mS);
   digitalWrite(STBY, LOW);
 }
 
 void go(int mS) {
   digitalWrite(STBY, HIGH);
-  digitalWrite(AIN, LOW);    // Forward direction
-  digitalWrite(PWMA, LOW);   // Full power
-  digitalWrite(BIN, LOW);    // Forward direction
-  digitalWrite(PWMB, LOW);   // Full power
+  digitalWrite(AIN, LOW);
+  digitalWrite(PWMA, HIGH);
+  digitalWrite(BIN, LOW);
+  digitalWrite(PWMB, HIGH);
   delay(mS);
   digitalWrite(STBY, LOW);
 }
 
 void back(int mS) {
   digitalWrite(STBY, HIGH);
-  digitalWrite(AIN, HIGH);    // Forward direction
-  digitalWrite(PWMA, HIGH);   // Full power
-  digitalWrite(BIN, HIGH);    // Forward direction
-  digitalWrite(PWMB, HIGH);   // Full power
+  digitalWrite(AIN, HIGH);
+  digitalWrite(PWMA, HIGH);
+  digitalWrite(BIN, HIGH);
+  digitalWrite(PWMB, HIGH);
   delay(mS);
   digitalWrite(STBY, LOW);
-}
-
-// Function - accepts the time in milli-Seconds to go into standby for
-void stopTime(int mS){
-  digitalWrite(STBY, LOW);   // Go into standby
-  delay(mS);                //  Wait defined time
-  digitalWrite(STBY, HIGH);  //  Come out of standby
 }
