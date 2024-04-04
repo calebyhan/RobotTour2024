@@ -41,6 +41,7 @@ void loop() {
     delay(100);
   }
 
+  //L: A, R: B
   // 90 degree turns: 270
   
   delay(1000);
@@ -49,7 +50,9 @@ void loop() {
 
   // CHANGE HERE
 
-
+  moveBlock();
+  turnRight(390);
+  
   // CHANGE HERE
   endRun();
 
@@ -57,61 +60,58 @@ void loop() {
 }
 
 void start() {
-  back(385);
-  delay(500);
-  turnRight(540);
+  //back(385);
+  //delay(500);
+  turnRight(670);
   delay(500);
 }
 
 void endRun() {
-  back(195);
+  go(400);
 }
 
 void moveBlock() {
   for (int i = 0; i < 4; i++) {
-    go(195);
+    digitalWrite(STBY, HIGH);
+    digitalWrite(AIN, LOW);
+    analogWrite(PWMA, 255);
+    digitalWrite(BIN, LOW);
+    analogWrite(PWMB, 180);
+    delay(240);
+    digitalWrite(STBY, LOW);
     delay(300);
   }
-  turnLeft(50);
   delay(300);
 }
 
 void turnLeft(int mS) {
   digitalWrite(STBY, HIGH);
   digitalWrite(AIN, HIGH);
-  digitalWrite(PWMA, HIGH);
+  analogWrite(PWMA, 255);
   digitalWrite(BIN, LOW);
-  digitalWrite(PWMB, HIGH);
+  analogWrite(PWMB, 180);
   delay(mS);
   digitalWrite(STBY, LOW);
+  delay(300);
 }
 
 void turnRight(int mS) {
   digitalWrite(STBY, HIGH);
   digitalWrite(AIN, LOW);
-  digitalWrite(PWMA, HIGH);
+  analogWrite(PWMA, 255);
   digitalWrite(BIN, HIGH);
-  digitalWrite(PWMB, HIGH);
+  analogWrite(PWMB, 180);
   delay(mS);
   digitalWrite(STBY, LOW);
+  delay(300);
 }
 
 void go(int mS) {
   digitalWrite(STBY, HIGH);
   digitalWrite(AIN, LOW);
-  digitalWrite(PWMA, HIGH);
+  analogWrite(PWMA, 255);
   digitalWrite(BIN, LOW);
-  digitalWrite(PWMB, HIGH);
-  delay(mS);
-  digitalWrite(STBY, LOW);
-}
-
-void back(int mS) {
-  digitalWrite(STBY, HIGH);
-  digitalWrite(AIN, HIGH);
-  digitalWrite(PWMA, HIGH);
-  digitalWrite(BIN, HIGH);
-  digitalWrite(PWMB, HIGH);
+  analogWrite(PWMB, 180);
   delay(mS);
   digitalWrite(STBY, LOW);
 }
